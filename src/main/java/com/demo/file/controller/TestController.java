@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 @RestController
 public class TestController {
 
-    public static final String path="E:\\test";
+    public static final String path = "E:\\test";
 
 
-    public static StringBuilder stringBuilder=new StringBuilder();
+    public static StringBuilder stringBuilder = new StringBuilder();
 
 
     static {
@@ -27,47 +27,67 @@ public class TestController {
 
     /**
      * 移动目录
+     *
      * @param str
      * @return
      */
     @RequestMapping("/cd")
-    public String cd(String str){
-        if (null!=str){
-            if ("..".equals(str)){
-                stringBuilder=new StringBuilder();
-                stringBuilder.append(path);
-            }
-            else {
-                if (str.startsWith("/")){
-                    stringBuilder.append(str);
-                }else {
-                    String s = str.split("/")[2];
-                    stringBuilder.append("/home/"+s);
-                }
+    public String cd(String str) {
+//        if (null!=str){
+//            if ("..".equals(str)){
+//                stringBuilder=new StringBuilder();
+//                stringBuilder.append(path);
+//            }
+//            else {
+//                if (str.startsWith("/")){
+//                    stringBuilder.append(str);
+//                }else {
+//                    String s = str.split("/")[2];
+//                    stringBuilder.append("/home/"+s);
+//                }
+//            }
+//        }
+
+        if (null != str) {
+            if (str.startsWith("/")) {
+                stringBuilder.append(str);
+            } else {
+                String substring = stringBuilder.toString().substring(0, stringBuilder.toString().lastIndexOf("/"));
+                stringBuilder.delete(0, stringBuilder.length());
+                String s = substring + str.replace("..", "");
+                stringBuilder.append(s);
             }
         }
+
         return "";
+
+
     }
 
 
     /**
      * 获取当前路径下的文件
+     *
      * @return
      */
     @RequestMapping("/pwd")
-    public String pwd(){
-        File file=new File(stringBuilder.toString());
-        if (file.isDirectory()){
-            if (stringBuilder.toString().equals(path))return "/";
-            File[] files = file.listFiles();
-            List<String> list = Arrays.stream(files).map(file1 -> file1.getName()).collect(Collectors.toList());
-            StringBuilder builder = new StringBuilder();
-            builder.append(stringBuilder.toString().split("t")[2]);
-            for (String s : list) {
-                builder.append(s);
-            }
-            return builder.toString();
+    public String pwd() {
+//        File file=new File(stringBuilder.toString());
+//        if (file.isDirectory()){
+        String s = stringBuilder.toString();
+        if (s.equals(path)) {
+            return "/";
         }
-        return "/";
+//            File[] files = file.listFiles();
+//            List<String> list = Arrays.stream(files).map(file1 -> file1.getName()).collect(Collectors.toList());
+//            StringBuilder builder = new StringBuilder();
+//            builder.append();
+//            for (String s : list) {
+//                builder.append("\\"+s);
+//            }
+//            System.out.println(s);
+        return s.split("t")[2];
     }
+//        return "/";
+//    }
 }
